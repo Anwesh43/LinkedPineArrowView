@@ -217,4 +217,13 @@ class PineArrowView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : PineArrowView {
+            val view : PineArrowView = PineArrowView(activity)
+            activity.setContentView(view)
+            return view 
+        }
+    }
 }
