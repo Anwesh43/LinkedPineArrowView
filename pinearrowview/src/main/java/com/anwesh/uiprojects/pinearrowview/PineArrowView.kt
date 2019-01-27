@@ -21,6 +21,7 @@ val foreColor : Int = Color.parseColor("#4527A0")
 val backColor : Int = Color.parseColor("#BDBDBD")
 val sizeFactor : Float = 2.9f
 val strokeFactor : Int = 90
+val delay : Long = 30
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
@@ -55,6 +56,7 @@ fun Canvas.drawPANode(i : Int, scale : Float, paint : Paint) {
     save()
     translate(w/2 + (w/2 + paint.strokeWidth/2 + size) * sf * sc22, gap * (i + 1))
     rotate(90f * sf * sc21)
+    translate(0f, -size)
     drawLine(0f, 0f, 0f, 2 * size * sc1, paint)
     for (j in 0..(lines - 1)) {
         drawPine(j, xGap, sc1.divideScale(j, lines), paint)
@@ -106,7 +108,7 @@ class PineArrowView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 
