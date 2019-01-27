@@ -194,4 +194,26 @@ class PineArrowView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : PineArrowView) {
+
+        private val animator : Animator = Animator(view)
+        private val pa : PineArrow = PineArrow(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            pa.draw(canvas, paint)
+            animator.animate {
+                pa.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            pa.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
