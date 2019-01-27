@@ -30,11 +30,11 @@ fun Float.mirrorValue(a : Int, b : Int) : Float = (1 - scaleFactor()) * a.invers
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * scGap * dir
 
 fun Canvas.drawPine(i : Int, size : Float, sc : Float, paint : Paint) {
-    for (i in 0..1) {
-        val sf : Float = 1f - 2 * i
+    for (k in 0..1) {
+        val sf : Float = 1f - 2 * k
         save()
         translate(0f, size * i)
-        drawLine(0f, 0f, size * sf * sc * sf, size/3 * sf * sc, paint)
+        drawLine(0f, 0f, size * sf * sc, size/3 * sc, paint)
         restore()
     }
 }
@@ -53,7 +53,7 @@ fun Canvas.drawPANode(i : Int, scale : Float, paint : Paint) {
     paint.strokeWidth = Math.min(w, h) / strokeFactor
     paint.strokeCap = Paint.Cap.ROUND
     save()
-    translate(w/2 + (w/2 + paint.strokeWidth/2) * sf * sc22, gap * (i + 1))
+    translate(w/2 + (w/2 + paint.strokeWidth/2 + size) * sf * sc22, gap * (i + 1))
     rotate(90f * sf * sc21)
     drawLine(0f, 0f, 0f, 2 * size * sc1, paint)
     for (j in 0..(lines - 1)) {
@@ -83,14 +83,12 @@ class PineArrowView(ctx : Context) : View(ctx) {
     data class State(var scale : Float = 0f, var dir : Float = 0f, var prevScale : Float = 0f) {
 
         fun update(cb : (Float) -> Unit) {
-            if (dir == 0f) {
-                dir = 1f - 2 * prevScale
-                if (Math.abs(scale - prevScale) > 1) {
-                    scale = prevScale + dir
-                    dir = 0f
-                    prevScale = scale
-                    cb(prevScale)
-                }
+            scale += scale.updateValue(dir, lines, 1)
+            if (Math.abs(scale - prevScale) > 1) {
+                scale = prevScale + dir
+                dir = 0f
+                prevScale = scale
+                cb(prevScale)
             }
         }
 
