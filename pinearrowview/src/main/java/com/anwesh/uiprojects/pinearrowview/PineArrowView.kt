@@ -223,7 +223,7 @@ class PineArrowView(ctx : Context) : View(ctx) {
         fun create(activity : Activity) : PineArrowView {
             val view : PineArrowView = PineArrowView(activity)
             activity.setContentView(view)
-            return view 
+            return view
         }
     }
 }
