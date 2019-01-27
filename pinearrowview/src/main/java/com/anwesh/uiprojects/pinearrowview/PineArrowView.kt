@@ -28,3 +28,36 @@ fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
 fun Float.mirrorValue(a : Int, b : Int) : Float = (1 - scaleFactor()) * a.inverse() + scaleFactor() * b.inverse()
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * scGap * dir
+
+fun Canvas.drawPine(i : Int, size : Float, sc : Float, paint : Paint) {
+    for (i in 0..1) {
+        val sf : Float = 1f - 2 * i
+        save()
+        translate(0f, size * i)
+        drawLine(0f, 0f, size * sf * sc * sf, size/3 * sf * sc, paint)
+        restore()
+    }
+}
+fun Canvas.drawPANode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = h / (nodes + 1)
+    val size : Float = gap / sizeFactor
+    val xGap : Float = (2 * size) / lines
+    val sc1 : Float = scale.divideScale(0, 2)
+    val sc2 : Float = scale.divideScale(1, 2)
+    val sc21 : Float = sc2.divideScale(0, lastStep)
+    val sc22 : Float = sc2.divideScale(1, lastStep)
+    val sf : Float = 1f - 2 * (i % 2)
+    paint.color = foreColor
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    paint.strokeCap = Paint.Cap.ROUND
+    save()
+    translate(w/2 + (w/2 + paint.strokeWidth/2) * sf * sc22, gap * (i + 1))
+    rotate(90f * sf * sc21)
+    drawLine(0f, 0f, 0f, 2 * size * sc1, paint)
+    for (j in 0..(lines - 1)) {
+        drawPine(j, xGap, sc1.divideScale(j, lines), paint)
+    }
+    restore()
+}
